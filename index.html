@@ -1,0 +1,293 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadena de automatización</title>
+<style>
+:root {
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  color: #f4f6ff;
+  background: #090d19;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at 80% 0%, #27366c 0, transparent 34%), #090d19;
+  min-height: 100vh;
+}
+.shell { max-width: 1150px; margin: auto; padding: 30px 28px 60px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+.brand { font-weight: 800; letter-spacing: .09em; font-size: 13px; color: #b6c3ff; }
+.pill { border: 1px solid #55618c; border-radius: 50px; padding: 9px 14px; color: #d9e1ff; font-size: 13px; }
+.progress { display: flex; gap: 8px; margin: 36px 0; }
+.progress span { height: 5px; flex: 1; background: #2c3451; border-radius: 10px; }
+.progress span.on { background: #a68aff; }
+.stage { color: #ac9aff; text-transform: uppercase; letter-spacing: .16em; font-size: 13px; font-weight: 800; margin-top: 24px; }
+h1 { font-size: clamp(37px,6vw,68px); line-height: 1.07; letter-spacing: -.045em; max-width: 900px; margin: 16px 0 22px; }
+.lead { font-size: clamp(17px,2vw,23px); color: #c8d0e6; line-height: 1.5; max-width: 900px; }
+.layout { display: grid; grid-template-columns: 1.3fr .8fr; gap: 22px; margin-top: 34px; }
+.panel { background: #151d33; border: 1px solid #354062; border-radius: 20px; padding: 26px; box-shadow: 0 12px 32px #0002; }
+.panel h2 { margin: 0 0 15px; font-size: 22px; }
+.panel p, .panel li { color: #d5ddf1; line-height: 1.65; }
+.panel ul { padding-left: 21px; }
+.accent { color: #b4a0ff; }
+.quote { font-size: 23px; line-height: 1.4; font-weight: 700; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #9fafe0; font-weight: 800; }
+.cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 13px; margin: 20px 0; }
+.mini { background: #222c48; border-radius: 14px; padding: 18px; }
+.mini strong { display: block; font-size: 19px; margin-bottom: 9px; }
+.mini small { color: #bdc8e4; line-height: 1.5; display: block; }
+.nav { display: flex; gap: 12px; justify-content: space-between; margin-top: 26px; align-items: center; }
+.btn { cursor: pointer; border: 1px solid #63709d; border-radius: 12px; padding: 13px 19px; background: #202b49; color: #fff; font-weight: 700; font-size: 14px; }
+.btn.primary { background: #a991ff; color: #14112b; border-color: #a991ff; }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.hint { font-size: 12px; color: #a8b3d3; }
+.interactive { margin-top: 22px; border-top: 1px solid #394360; padding-top: 19px; }
+.choices { display: flex; flex-wrap: wrap; gap: 9px; }
+.choice { padding: 11px 14px; border: 1px solid #65719a; background: #202a46; border-radius: 10px; color: white; cursor: pointer; }
+.choice.active { background: #a991ff; color: #17102d; }
+.reveal { margin-top: 14px; padding: 15px; background: #29345b; border-radius: 10px; color: #e9edff; line-height: 1.5; min-height: 48px; }
+@media(max-width:780px) {
+  .layout { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .shell { padding: 20px 16px; }
+  .top { align-items: flex-start; }
+  .pill { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand">◈ CADENA DE AUTOMATIZACIÓN</div>
+    <div class="pill" id="role"></div>
+  </header>
+  <div class="progress" id="progress"></div>
+  <div class="stage" id="stage"></div>
+  <h1 id="title"></h1>
+  <div class="lead" id="lead"></div>
+  <main class="layout">
+    <section class="panel" id="main"></section>
+    <aside class="panel">
+      <div class="eyebrow">Idea clave para exponer</div>
+      <p class="quote" id="quote"></p>
+      <div class="interactive">
+        <div class="eyebrow" id="question"></div>
+        <div class="choices" id="choices"></div>
+        <div class="reveal" id="reveal"></div>
+      </div>
+    </aside>
+  </main>
+  <nav class="nav">
+    <button class="btn" id="prev">← Anterior</button>
+    <span class="hint" id="count"></span>
+    <button class="btn primary" id="next">Siguiente →</button>
+  </nav>
+</div>
+<script>
+const slides = [
+  {
+    role: 'Moderador · Introducción',
+    title: 'La automatización no solo cambia lo que hacemos. Cambia cómo trabajamos.',
+    lead: '¿Qué sucede con un puesto cuando una tecnología empieza a realizar parte de sus tareas?',
+    main: `
+      <h2>Una transformación del diseño del trabajo</h2>
+      <p>La inteligencia artificial y la automatización modifican responsabilidades, decisiones y competencias. La pregunta no es únicamente cuánto tiempo ahorramos, sino qué ocurre con las personas.</p>
+      <div class="cards">
+        <div class="mini"><strong>01 · Tareas</strong><small>¿Qué actividades cambian o se delegan?</small></div>
+        <div class="mini"><strong>02 · Autonomía</strong><small>¿Quién conserva la capacidad de decidir?</small></div>
+        <div class="mini"><strong>03 · Competencias</strong><small>¿Qué debemos aprender ahora?</small></div>
+      </div>
+      <p>La OIT (2025) plantea que la exposición a la IA generativa puede transformar ocupaciones sin necesariamente eliminarlas.</p>
+    `,
+    quote: 'Automatizar una tarea no equivale a eliminar un puesto.',
+    question: 'Para abrir la discusión',
+    choices: ['¿Más productividad?', '¿Más autonomía?', '¿Nuevas habilidades?'],
+    answers: [
+      'La productividad importa, pero no explica por sí sola el rediseño del puesto.',
+      'La autonomía depende de cómo se implemente la tecnología.',
+      'Las competencias cambian cuando se redistribuyen las tareas.'
+    ]
+  },
+  {
+    role: 'Compañero 1 · Tareas',
+    title: 'Del trabajo repetitivo al criterio profesional.',
+    lead: 'Automatizar significa redistribuir actividades entre personas y sistemas, no necesariamente reemplazar a quien ocupa el puesto.',
+    main: `
+      <h2>Antes y después</h2>
+      <div class="cards">
+        <div class="mini"><strong>Antes</strong><small>Recopilar datos, elaborar reportes y verificar documentos manualmente.</small></div>
+        <div class="mini"><strong>Automatización</strong><small>El sistema consolida información y genera resultados preliminares.</small></div>
+        <div class="mini"><strong>Después</strong><small>La persona interpreta, valida, decide y propone mejoras.</small></div>
+      </div>
+      <p><strong>Evidencia:</strong> Noy y Zhang (2023) observaron, en tareas específicas de escritura profesional, aproximadamente <span class="accent">40 % menos tiempo</span> y <span class="accent">18 % más calidad</span> con IA generativa. Estos resultados no deben generalizarse a todas las ocupaciones.</p>
+      <p><strong>Riesgo:</strong> la eficiencia puede traducirse en metas más exigentes, en vez de reducir la carga de trabajo.</p>
+    `,
+    quote: 'La tarea cambia; el juicio humano sigue siendo importante.',
+    question: '¿Qué conviene automatizar primero?',
+    choices: ['Copiar datos', 'Interpretar riesgos', 'Decidir sanciones'],
+    answers: [
+      'Las tareas repetitivas y estandarizadas suelen ser buenas candidatas.',
+      'Interpretar riesgos requiere contexto y juicio profesional.',
+      'Una decisión de alto impacto necesita revisión y responsabilidad humana.'
+    ]
+  },
+  {
+    role: 'Compañero 2 · Autonomía',
+    title: '¿La tecnología nos libera o nos controla?',
+    lead: 'La misma automatización puede ampliar la libertad para decidir o imponer instrucciones y vigilancia constantes.',
+    main: `
+      <h2>Dos formas de implementar la tecnología</h2>
+      <div class="cards">
+        <div class="mini"><strong>Autonomía ampliada</strong><small>Menos trabajo mecánico y más tiempo para analizar, proponer y decidir.</small></div>
+        <div class="mini"><strong>Autonomía reducida</strong><small>Algoritmos que asignan tareas, monitorean cada movimiento y restringen decisiones.</small></div>
+        <div class="mini"><strong>Diseño responsable</strong><small>Supervisión proporcional, transparencia y participación del trabajador.</small></div>
+      </div>
+      <p>Hackman y Oldham (1976) vinculan la autonomía con la motivación y la responsabilidad psicológica. Parker y Grote (2022) subrayan que el efecto de la tecnología depende del diseño del trabajo.</p>
+      <p>Los documentales de Deutsche Welle ilustran tanto la subordinación a sistemas como la vigilancia digital de trabajadores.</p>
+    `,
+    quote: 'La pregunta central no es si existe un algoritmo, sino quién tiene la última palabra.',
+    question: '¿Qué modelo elegirías?',
+    choices: ['La IA decide todo', 'La IA recomienda', 'Solo decisiones humanas'],
+    answers: [
+      'Puede reducir la autonomía y dificultar la rendición de cuentas.',
+      'Permite aprovechar la información manteniendo juicio y responsabilidad humana.',
+      'Preserva control, pero puede desaprovechar herramientas útiles.'
+    ]
+  },
+  {
+    role: 'Compañero 3 · Competencias',
+    title: 'Cuando cambian las tareas, cambian las habilidades.',
+    lead: 'La automatización transforma el perfil profesional: no basta con conocer una herramienta; también hay que evaluar sus resultados.',
+    main: `
+      <h2>Competencias para un puesto rediseñado</h2>
+      <div class="cards">
+        <div class="mini"><strong>Digitales</strong><small>Uso de sistemas, automatización y alfabetización de datos.</small></div>
+        <div class="mini"><strong>Cognitivas</strong><small>Pensamiento crítico, interpretación y resolución de problemas.</small></div>
+        <div class="mini"><strong>Humanas</strong><small>Comunicación, adaptabilidad, ética y colaboración.</small></div>
+      </div>
+      <p>La actualización de competencias debe acompañar la introducción de tecnología. Las organizaciones tienen responsabilidad en ofrecer capacitación y oportunidades de aprendizaje.</p>
+      <p>Sin ese acompañamiento, la automatización puede ampliar desigualdades entre quienes acceden a formación y quienes no.</p>
+    `,
+    quote: 'No se trata solo de aprender a usar IA, sino de saber cuándo confiar en ella.',
+    question: '¿Qué competencia priorizarías?',
+    choices: ['Análisis crítico', 'Uso de herramientas', 'Adaptabilidad'],
+    answers: [
+      'Permite detectar errores, sesgos y conclusiones poco confiables.',
+      'Es necesaria para trabajar con nuevas plataformas y procesos.',
+      'Facilita la transición hacia responsabilidades diferentes.'
+    ]
+  },
+  {
+    role: 'Compañero 4 · Rediseño',
+    title: 'Rediseñemos un puesto de Recursos Humanos.',
+    lead: 'Un analista deja de invertir horas en consolidar reportes y comienza a dedicar más tiempo a interpretar tendencias y recomendar acciones.',
+    main: `
+      <h2>Ejemplo práctico: analista de Recursos Humanos</h2>
+      <div class="cards">
+        <div class="mini"><strong>Tareas</strong><small>Power BI y Power Automate apoyan la consolidación y actualización de reportes.</small></div>
+        <div class="mini"><strong>Autonomía</strong><small>El analista interpreta productividad, rotación y dotación, y propone soluciones.</small></div>
+        <div class="mini"><strong>Competencias</strong><small>Análisis de datos, pensamiento estratégico y validación de resultados.</small></div>
+      </div>
+      <p><strong>Decisión de diseño:</strong> reservar tiempo real para el análisis, mantener la revisión humana y acompañar el cambio con capacitación.</p>
+      <p><strong>Advertencia:</strong> si el tiempo liberado se convierte únicamente en más reportes, el rediseño puede aumentar la presión laboral.</p>
+    `,
+    quote: 'Un puesto mejor diseñado no produce solo más reportes: produce mejores decisiones.',
+    question: '¿Qué harías con el tiempo liberado?',
+    choices: ['Más reportes', 'Analizar tendencias', 'Capacitar al equipo'],
+    answers: [
+      'Puede aumentar el volumen sin mejorar la calidad del trabajo.',
+      'Transforma información en recomendaciones útiles.',
+      'Fortalece capacidades para sostener el cambio tecnológico.'
+    ]
+  },
+  {
+    role: 'Moderador · Conclusiones',
+    title: 'El futuro del trabajo también se diseña.',
+    lead: 'La automatización no determina por sí sola la calidad del trabajo: las decisiones organizacionales sí importan.',
+    main: `
+      <h2>Cuatro conclusiones</h2>
+      <ol>
+        <li><strong>Las tareas se redistribuyen.</strong> Automatizar no significa necesariamente eliminar el puesto.</li>
+        <li><strong>La autonomía no está garantizada.</strong> Puede crecer o disminuir según el diseño y la supervisión.</li>
+        <li><strong>Las competencias evolucionan.</strong> La capacitación es una responsabilidad compartida con la organización.</li>
+        <li><strong>Productividad y bienestar deben equilibrarse.</strong> El éxito no consiste únicamente en hacer más en menos tiempo.</li>
+      </ol>
+      <p><strong>Pregunta final:</strong> si mañana pudieras automatizar una parte de tu trabajo, ¿qué tarea elegirías y qué harías con el tiempo recuperado?</p>
+    `,
+    quote: 'La tecnología transforma el trabajo. Nosotros decidimos cómo diseñarlo.',
+    question: 'Reflexión final',
+    choices: ['Eficiencia', 'Autonomía', 'Bienestar'],
+    answers: [
+      'Es una meta valiosa, pero insuficiente por sí sola.',
+      'Es central para que las personas mantengan capacidad de decisión.',
+      'Es indispensable para que el cambio sea sostenible.'
+    ]
+  }
+];
+
+let index = Math.max(
+  0,
+  Math.min(5, Number(new URLSearchParams(location.search).get('etapa') || 1) - 1)
+);
+
+function draw() {
+  let s = slides[index];
+
+  document.getElementById('role').textContent = s.role;
+  document.getElementById('progress').innerHTML = slides.map((_, i) =>
+    `<span class="${i <= index ? 'on' : ''}"></span>`
+  ).join('');
+
+  document.getElementById('stage').textContent =
+    `ETAPA ${String(index + 1).padStart(2, '0')} / 06`;
+
+  document.getElementById('title').textContent = s.title;
+  document.getElementById('lead').textContent = s.lead;
+  document.getElementById('main').innerHTML = s.main;
+  document.getElementById('quote').textContent = s.quote;
+  document.getElementById('question').textContent = s.question;
+
+  document.getElementById('choices').innerHTML = s.choices.map((x, i) =>
+    `<button class="choice" data-answer="${i}">${x}</button>`
+  ).join('');
+
+  document.getElementById('reveal').textContent =
+    'Seleccioná una opción para explorar una idea.';
+
+  document.querySelectorAll('.choice').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.choice').forEach(x =>
+        x.classList.remove('active')
+      );
+      b.classList.add('active');
+      document.getElementById('reveal').textContent =
+        s.answers[Number(b.dataset.answer)];
+    };
+  });
+
+  document.getElementById('prev').disabled = index === 0;
+  document.getElementById('next').disabled = index === 5;
+  document.getElementById('count').textContent = `${index + 1} de 6`;
+
+  history.replaceState(null, '', `?etapa=${index + 1}`);
+}
+
+document.getElementById('prev').onclick = () => {
+  index--;
+  draw();
+  scrollTo(0, 0);
+};
+
+document.getElementById('next').onclick = () => {
+  index++;
+  draw();
+  scrollTo(0, 0);
+};
+
+draw();
+</script>
+</body>
+</html>
